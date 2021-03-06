@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.textfield.TextInputLayout;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +71,14 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
             else if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
                 initLayoutList((ViewGroup) view);
         }
+    }
+
+    public boolean isValid() {
+        for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet())
+            if (!entry.getValue().isErrorFree())
+                return false;
+
+        return true;
     }
 
     public void validate() {
@@ -130,19 +136,23 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
     }
 
     @Override
-    synchronized public void onError(ValidatingTextInputLayout textInputLayout, ValidationError validationError) {
+    public void onError(ValidatingTextInputLayout textInputLayout, ValidationError validationError) {
         if (validatorListener != null)
             validatorListener.onError(textInputLayout, validationError);
 
-        inputLayoutPairMap.get(textInputLayout).setErrorFree(false);
+        synchronized (inputLayoutPairMap) {
+            inputLayoutPairMap.get(textInputLayout).setErrorFree(false);
+        }
     }
 
     @Override
-    synchronized public void onSuccess(ValidatingTextInputLayout textInputLayout) {
+    public void onSuccess(ValidatingTextInputLayout textInputLayout) {
         if (validatorListener != null)
             validatorListener.onErrorResolved(textInputLayout);
 
-        inputLayoutPairMap.get(textInputLayout).setErrorFree(true);
+        synchronized (inputLayoutPairMap) {
+            inputLayoutPairMap.get(textInputLayout).setErrorFree(true);
+        }
 
         for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet())
             if (!entry.getValue().isErrorFree())
