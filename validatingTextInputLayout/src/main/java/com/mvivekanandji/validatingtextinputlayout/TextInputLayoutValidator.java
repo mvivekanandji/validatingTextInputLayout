@@ -37,7 +37,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
     public interface ValidatorListener {
         void onValidateErrors(List<ValidatingTextInputLayout> errorLayoutList, List<ValidationError> validationErrorList);
 
-        void onError(ValidatingTextInputLayout inputLayout, ValidationError validationError);
+        void onError(ValidatingTextInputLayout inputLayout, ValidationError validationError, boolean isErrorOnValidate);
 
         void onErrorResolved(ValidatingTextInputLayout inputLayout);
 
@@ -92,26 +92,46 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 attachTextWatcher(entry.getKey(), entry.getValue());
 
             if (entry.getKey().isRequired() && TextUtils.isEmpty(text)) {
+
+                if (validatorListener != null)
+                    validatorListener.onError( entry.getKey(), ValidationError.REQUIRED, true);
+
                 entry.getKey().setError(entry.getKey().getRequiredErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.REQUIRED);
 
             } else if (entry.getKey().isMinLengthSet() && text.length() < entry.getKey().getMinLength()) {
+
+                if (validatorListener != null)
+                    validatorListener.onError( entry.getKey(), ValidationError.MIN_LENGTH, true);
+
                 entry.getKey().setError(entry.getKey().getMinLengthErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.MIN_LENGTH);
 
             } else if (entry.getKey().isMaxLengthSet() && text.length() > entry.getKey().getMaxLength()) {
+
+                if (validatorListener != null)
+                    validatorListener.onError( entry.getKey(), ValidationError.MAX_LENGTH, true);
+
                 entry.getKey().setError(entry.getKey().getMaxLengthErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.MAX_LENGTH);
 
             } else if (entry.getKey().isValidationRegexSet() && !text.matches(entry.getKey().getValidationRegex())) {
+
+                if (validatorListener != null)
+                    validatorListener.onError( entry.getKey(), ValidationError.REGEX, true);
+
                 entry.getKey().setError(entry.getKey().getValidationRegexErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.REGEX);
 
             } else if (entry.getKey().isValidationTypeSet() && !text.matches(entry.getKey().getValidationTypeRegex())) {
+
+                if (validatorListener != null)
+                    validatorListener.onError( entry.getKey(), ValidationError.VALIDATION_TYPE, true);
+
                 entry.getKey().setError(entry.getKey().getValidationTypeErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.VALIDATION_TYPE);
@@ -138,7 +158,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
     @Override
     public void onError(ValidatingTextInputLayout textInputLayout, ValidationError validationError) {
         if (validatorListener != null)
-            validatorListener.onError(textInputLayout, validationError);
+            validatorListener.onError(textInputLayout, validationError, false);
 
         synchronized (inputLayoutPairMap) {
             inputLayoutPairMap.get(textInputLayout).setErrorFree(false);
