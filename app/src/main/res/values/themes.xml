@@ -13,4 +13,33 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="LoginInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:baselineAligned">true</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="required">true</item>
+        <item name="requiredErrorText">Required*</item>
+        <item name="errorEnabled">true</item>
+        <item name="android:textColorHint">@color/colorPrimaryVariant</item>
+        <item name="endIconTint">@color/colorPrimary</item>
+        <item name="startIconTint">@color/colorPrimary</item>
+        <item name="errorIconTint">@color/danger</item>
+        <item name="errorTextColor">@color/danger</item>
+        <item name="boxStrokeErrorColor">@color/danger</item>
+        <item name="layout_constraintWidth_percent">.70</item>
+    </style>
+
+    <style name="LoginEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="maxLines">1</item>
+    </style>
+
 </resources>

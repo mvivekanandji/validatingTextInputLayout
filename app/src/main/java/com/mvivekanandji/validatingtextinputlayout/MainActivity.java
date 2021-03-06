@@ -15,11 +15,13 @@
  */
 package com.mvivekanandji.validatingtextinputlayout;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.mvivekanandji.validatingtextinputlayout.databinding.ActivityMainBinding;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements TextInputLayoutVa
 
     private ActivityMainBinding rootBinding;
     private TextInputLayoutValidator inputLayoutValidator;
+    private boolean isFirstTry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +47,16 @@ public class MainActivity extends AppCompatActivity implements TextInputLayoutVa
         setContentView(rootBinding.getRoot());
 
         inputLayoutValidator = new TextInputLayoutValidator(rootBinding.getRoot(), this);
+        isFirstTry = true;
 
-        rootBinding.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        rootBinding.mbLogin.setOnClickListener(v -> {
+            if (isFirstTry)
                 inputLayoutValidator.validate();
+
+            isFirstTry = false;
+
+            if (inputLayoutValidator.isValid()) {
+                Toast.makeText(this, "Logged In", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -59,17 +67,22 @@ public class MainActivity extends AppCompatActivity implements TextInputLayoutVa
     }
 
     @Override
-    public void onError(ValidatingTextInputLayout inputLayout, TextInputLayoutValidator.ValidationError validationError) {
-        Toast.makeText(this, "onError" + validationError.toString(), Toast.LENGTH_SHORT).show();
+    public void onError(ValidatingTextInputLayout inputLayout, TextInputLayoutValidator.ValidationError validationError, boolean isErrorOnValidate) {
+        rootBinding.mbLogin.setEnabled(false);
+        inputLayout.setStartIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.danger)));
+        inputLayout.setDefaultHintTextColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.danger)));
+
     }
 
     @Override
     public void onErrorResolved(ValidatingTextInputLayout inputLayout) {
-        Toast.makeText(this, "Resolved", Toast.LENGTH_SHORT).show();
+        inputLayout.setStartIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
+        inputLayout.setDefaultHintTextColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimaryVariant)));
+
     }
 
     @Override
     public void onSuccess() {
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        rootBinding.mbLogin.setEnabled(true);
     }
 }

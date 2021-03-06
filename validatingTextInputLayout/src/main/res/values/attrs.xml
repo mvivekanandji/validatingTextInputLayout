@@ -42,6 +42,7 @@
             <enum name="ip" value="8" />
         </attr>
         <attr name="validationTypeErrorText" format="reference|string"/>
+        <attr name="defaultValidated" format="boolean"/>
         <attr name="validationCheck">
             <enum name="onTrigger" value="0" />
             <enum name="always" value="1" />

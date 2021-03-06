@@ -69,6 +69,7 @@ public class ValidatingTextInputLayout extends TextInputLayout {
     private String validationRegexErrorText;
     private ValidationType validationType;
     private String validationTypeErrorText;
+    private boolean defaultValidated;
     private ValidationCheck validationCheck;
 
     public ValidatingTextInputLayout(@NonNull Context context) {
@@ -109,6 +110,7 @@ public class ValidatingTextInputLayout extends TextInputLayout {
             validationTypeErrorText = typedArray.getString(R.styleable.ValidatingTextInputLayout_validationTypeErrorText);
         else validationTypeErrorText = validationType.toString() + " Validation Failed!";
 
+        defaultValidated = typedArray.getBoolean(R.styleable.ValidatingTextInputLayout_defaultValidated, false);
         validationCheck = ValidationCheck.values()[typedArray.getInt(R.styleable.ValidatingTextInputLayout_validationCheck, 0)];
 
         typedArray.recycle();
@@ -198,6 +200,14 @@ public class ValidatingTextInputLayout extends TextInputLayout {
         this.validationTypeErrorText = validationTypeErrorText;
     }
 
+    public boolean isDefaultValidated() {
+        return defaultValidated;
+    }
+
+    public void setDefaultValidated(boolean defaultValidated) {
+        this.defaultValidated = defaultValidated;
+    }
+
     public ValidationCheck getValidationCheck() {
         return validationCheck;
     }
@@ -262,6 +272,6 @@ public class ValidatingTextInputLayout extends TextInputLayout {
     }
 
     boolean isAnyValidationSet() {
-        return isRequired() || isMinLengthSet() || isMaxLengthSet() || isValidationRegexSet() | isValidationTypeSet();
+        return (!isDefaultValidated()) || isRequired() || isMinLengthSet() || isMaxLengthSet() || isValidationRegexSet() | isValidationTypeSet();
     }
 }
