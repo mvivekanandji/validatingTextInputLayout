@@ -39,32 +39,38 @@ class ValidatingTextWatcher implements TextWatcher {
         if (textInputLayout.isRequired() && TextUtils.isEmpty(s)) {
             if (onStateChangedListener != null)
                 onStateChangedListener.onError(textInputLayout, TextInputLayoutValidator.ValidationError.REQUIRED);
+            textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(textInputLayout.getRequiredErrorText());
 
         } else if (textInputLayout.isMinLengthSet() && s.length() < textInputLayout.getMinLength()) {
             if (onStateChangedListener != null)
                 onStateChangedListener.onError(textInputLayout, TextInputLayoutValidator.ValidationError.MIN_LENGTH);
+            textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(textInputLayout.getMinLengthErrorText());
 
         } else if (textInputLayout.isMaxLengthSet() && s.length() > textInputLayout.getMaxLength()) {
             if (onStateChangedListener != null)
                 onStateChangedListener.onError(textInputLayout, TextInputLayoutValidator.ValidationError.MAX_LENGTH);
+            textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(textInputLayout.getMaxLengthErrorText());
 
         } else if (textInputLayout.isValidationRegexSet() && !s.toString().matches(textInputLayout.getValidationRegex())) {
             if (onStateChangedListener != null)
                 onStateChangedListener.onError(textInputLayout, TextInputLayoutValidator.ValidationError.REGEX);
+            textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(textInputLayout.getValidationRegexErrorText());
 
         } else if (textInputLayout.isValidationTypeSet() && !s.toString().matches(textInputLayout.getValidationTypeRegex())) {
             if (onStateChangedListener != null)
                 onStateChangedListener.onError(textInputLayout, TextInputLayoutValidator.ValidationError.VALIDATION_TYPE);
+            textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(textInputLayout.getValidationTypeErrorText());
 
         } else {
             if (onStateChangedListener != null)
                 onStateChangedListener.onSuccess(textInputLayout);
             textInputLayout.setError(null);
+            textInputLayout.setErrorEnabled(false);
         }
     }
 

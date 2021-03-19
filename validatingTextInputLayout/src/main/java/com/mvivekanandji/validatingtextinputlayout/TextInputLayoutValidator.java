@@ -13,6 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * Copyright 2021 Vivekanand Mishra.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mvivekanandji.validatingtextinputlayout;
 
 import android.text.TextUtils;
@@ -97,6 +112,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 if (validatorListener != null)
                     validatorListener.onError(entry.getKey(), ValidationError.REQUIRED, true);
 
+                entry.getKey().setErrorEnabled(true);
                 entry.getKey().setError(entry.getKey().getRequiredErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.REQUIRED);
@@ -107,6 +123,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 if (validatorListener != null)
                     validatorListener.onError(entry.getKey(), ValidationError.MIN_LENGTH, true);
 
+                entry.getKey().setErrorEnabled(true);
                 entry.getKey().setError(entry.getKey().getMinLengthErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.MIN_LENGTH);
@@ -117,6 +134,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 if (validatorListener != null)
                     validatorListener.onError(entry.getKey(), ValidationError.MAX_LENGTH, true);
 
+                entry.getKey().setErrorEnabled(true);
                 entry.getKey().setError(entry.getKey().getMaxLengthErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.MAX_LENGTH);
@@ -127,6 +145,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 if (validatorListener != null)
                     validatorListener.onError(entry.getKey(), ValidationError.REGEX, true);
 
+                entry.getKey().setErrorEnabled(true);
                 entry.getKey().setError(entry.getKey().getValidationRegexErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.REGEX);
@@ -137,6 +156,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 if (validatorListener != null)
                     validatorListener.onError(entry.getKey(), ValidationError.VALIDATION_TYPE, true);
 
+                entry.getKey().setErrorEnabled(true);
                 entry.getKey().setError(entry.getKey().getValidationTypeErrorText());
                 errorLayoutList.add(entry.getKey());
                 validationErrorList.add(ValidationError.VALIDATION_TYPE);
@@ -189,6 +209,8 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
     private void updateErrorStatus(ValidatingTextInputLayout textInputLayout, boolean isErrorFree) {
         synchronized (inputLayoutPairMap) {
             inputLayoutPairMap.get(textInputLayout).setErrorFree(isErrorFree);
+            if (isErrorFree)
+                textInputLayout.setErrorEnabled(true);
         }
     }
 
