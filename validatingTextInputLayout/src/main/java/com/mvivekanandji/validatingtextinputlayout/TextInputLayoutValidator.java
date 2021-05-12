@@ -50,13 +50,23 @@ import java.util.Map;
 public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateChangedListener {
 
     public interface ValidatorListener {
-        void onValidateErrors(List<ValidatingTextInputLayout> errorLayoutList, List<ValidationError> validationErrorList);
+        default void onValidateErrors(@NonNull final List<ValidatingTextInputLayout> errorLayoutList,
+                                      @NonNull final List<ValidationError> validationErrorList) {
+        }
 
-        void onError(ValidatingTextInputLayout inputLayout, ValidationError validationError, boolean isErrorOnValidate);
+        default void onError(@NonNull final ValidatingTextInputLayout inputLayout,
+                             @NonNull final ValidationError validationError,
+                             final boolean isErrorOnValidate) {
+        }
 
-        void onErrorResolved(ValidatingTextInputLayout inputLayout);
 
-        void onSuccess();
+        default void onErrorResolved(@NonNull final ValidatingTextInputLayout inputLayout) {
+        }
+
+
+        default void onSuccess() {
+        }
+
     }
 
     public enum ValidationError {
