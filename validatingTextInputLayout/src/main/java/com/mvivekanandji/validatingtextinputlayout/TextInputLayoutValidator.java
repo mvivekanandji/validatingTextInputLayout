@@ -74,7 +74,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
         MIN_LENGTH,
         MAX_LENGTH,
         REGEX,
-        VALIDATION_TYPE;
+        VALIDATION_TYPE
     }
 
     private final Map<ValidatingTextInputLayout, Pair> inputLayoutPairMap;
@@ -104,6 +104,76 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
                 return false;
 
         return true;
+    }
+
+    public void validateSilently() {
+        List<ValidatingTextInputLayout> errorLayoutList = new ArrayList<>();
+        List<ValidationError> validationErrorList = new ArrayList<>();
+
+        for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet()) {
+            String text = entry.getKey().getEditText().getText().toString();
+            boolean isErrorFree = true;
+
+            if (!entry.getValue().isTextWatcherAttached())
+                attachTextWatcher(entry.getKey(), entry.getValue());
+
+            if (entry.getKey().isRequired() && TextUtils.isEmpty(text)) {
+
+                if (validatorListener != null)
+                    validatorListener.onError(entry.getKey(), ValidationError.REQUIRED, true);
+
+                errorLayoutList.add(entry.getKey());
+                validationErrorList.add(ValidationError.REQUIRED);
+                isErrorFree = false;
+
+            } else if (entry.getKey().isMinLengthSet() && text.length() < entry.getKey().getMinLength()) {
+
+                if (validatorListener != null)
+                    validatorListener.onError(entry.getKey(), ValidationError.MIN_LENGTH, true);
+
+                errorLayoutList.add(entry.getKey());
+                validationErrorList.add(ValidationError.MIN_LENGTH);
+                isErrorFree = false;
+
+            } else if (entry.getKey().isMaxLengthSet() && text.length() > entry.getKey().getMaxLength()) {
+
+                if (validatorListener != null)
+                    validatorListener.onError(entry.getKey(), ValidationError.MAX_LENGTH, true);
+
+                errorLayoutList.add(entry.getKey());
+                validationErrorList.add(ValidationError.MAX_LENGTH);
+                isErrorFree = false;
+
+            } else if (entry.getKey().isValidationRegexSet() && !text.matches(entry.getKey().getValidationRegex())) {
+
+                if (validatorListener != null)
+                    validatorListener.onError(entry.getKey(), ValidationError.REGEX, true);
+
+                errorLayoutList.add(entry.getKey());
+                validationErrorList.add(ValidationError.REGEX);
+                isErrorFree = false;
+
+            } else if (entry.getKey().isValidationTypeSet() && !text.matches(entry.getKey().getValidationTypeRegex())) {
+
+                if (validatorListener != null)
+                    validatorListener.onError(entry.getKey(), ValidationError.VALIDATION_TYPE, true);
+
+                errorLayoutList.add(entry.getKey());
+                validationErrorList.add(ValidationError.VALIDATION_TYPE);
+                isErrorFree = false;
+            }
+
+            updateErrorStatus(entry.getKey(), isErrorFree);
+        }
+
+        if (errorLayoutList.isEmpty()) {
+            if (validatorListener != null)
+                validatorListener.onSuccess();
+
+        } else {
+            if (validatorListener != null)
+                validatorListener.onValidateErrors(errorLayoutList, validationErrorList);
+        }
     }
 
     public void validate() {

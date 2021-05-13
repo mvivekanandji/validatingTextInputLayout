@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -62,12 +63,12 @@ public class MainActivity extends AppCompatActivity implements TextInputLayoutVa
     }
 
     @Override
-    public void onValidateErrors(List<ValidatingTextInputLayout> errorLayoutList, List<TextInputLayoutValidator.ValidationError> validationErrorList) {
+    public void onValidateErrors(@NonNull List<ValidatingTextInputLayout> errorLayoutList, @NonNull List<TextInputLayoutValidator.ValidationError> validationErrorList) {
 
     }
 
     @Override
-    public void onError(ValidatingTextInputLayout inputLayout, TextInputLayoutValidator.ValidationError validationError, boolean isErrorOnValidate) {
+    public void onError(@NonNull ValidatingTextInputLayout inputLayout, @NonNull TextInputLayoutValidator.ValidationError validationError, boolean isErrorOnValidate) {
         rootBinding.mbLogin.setEnabled(false);
         inputLayout.setStartIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.danger)));
         inputLayout.setDefaultHintTextColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.danger)));
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements TextInputLayoutVa
     }
 
     @Override
-    public void onErrorResolved(ValidatingTextInputLayout inputLayout) {
+    public void onErrorResolved(@NonNull ValidatingTextInputLayout inputLayout) {
         inputLayout.setStartIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
         inputLayout.setDefaultHintTextColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimaryVariant)));
 
