@@ -84,7 +84,7 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
         inputLayoutPairMap = new HashMap<>();
         this.validatorListener = validatorListener;
         initLayoutList(viewGroup);
-        attachListeners();
+        attachListeners(false);
     }
 
     private void initLayoutList(@NonNull final ViewGroup viewGroup) {
@@ -256,9 +256,30 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
         }
     }
 
-    private void attachListeners() {
+    public void clearAllErrors() {
         for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet()) {
-            if (entry.getKey().isContinuousValidationRequired())
+            if (entry.getKey().isErrorEnabled())
+                entry.getKey().setErrorEnabled(false);
+        }
+    }
+
+    public void removeValidations() {
+        for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet()) {
+            if (entry.getValue().isTextWatcherAttached())
+                entry.getKey().getEditText().removeTextChangedListener(entry.getValue().textWatcher);
+        }
+    }
+
+    /**
+     * @see TextInputLayoutValidator#attachListeners(boolean)
+     */
+    public void attachValidations(final boolean attachToAll) {
+        attachListeners(attachToAll);
+    }
+
+    private void attachListeners(final boolean attachToAll) {
+        for (Map.Entry<ValidatingTextInputLayout, Pair> entry : inputLayoutPairMap.entrySet()) {
+            if (attachToAll || entry.getKey().isContinuousValidationRequired())
                 attachTextWatcher(entry.getKey(), entry.getValue());
         }
     }
@@ -304,9 +325,9 @@ public class TextInputLayoutValidator implements ValidatingTextWatcher.OnStateCh
         private ValidatingTextWatcher textWatcher;
         private boolean isErrorFree;
 
-        public Pair(boolean isErrorFree) {
+        public Pair(boolean isValidationFree) {
             this.textWatcher = null;
-            this.isErrorFree = isErrorFree;
+            this.isErrorFree = isValidationFree;
         }
 
         public ValidatingTextWatcher getTextWatcher() {
